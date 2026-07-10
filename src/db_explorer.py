@@ -7,10 +7,6 @@ import pandas as pd
 
 conn = sqlite3.connect('./data/irise38.sqlite3')
 
-house = 'House'
-appliance = 'Appliance'
-consumption = 'Consumption'
-
 #JOIN intre Aplliance, House si Consumption pentru a obtine toate consumatoarele si consumul lor pe fiecare casa
 query = """
 SELECT 
