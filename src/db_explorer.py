@@ -12,10 +12,7 @@ query = """
 SELECT 
     apl.ID as id_appliance,
     apl.HouseIDREF,
-    apl.Name,
-    h.StartingEpochTime,
-    h.EndingEpochTime,
-    ROUND((h.EndingEpochTime - h.StartingEpochTime) / (60 * 60 * 24.0), 3) AS durata_timp,
+    apl.Name, 
     c.value as consum,
     datetime(c.EpochTime, 'unixepoch') as timp_consum
 FROM Appliance as apl
@@ -26,7 +23,7 @@ INNER JOIN Consumption as c
 """
 
 df = pd.read_sql_query(query, conn)
-conn.close()
+
 
 # Pentru fiecare casa distincta, salveaza consumatoarele ei intr-o baza de date SQLite separata 
 cheie_unica_casa = df['HouseIDREF'].unique()
@@ -42,3 +39,23 @@ for id_casa in cheie_unica_casa:
     df_casa.to_sql('aplienceuri_casa', conn_casa, index=False, if_exists='replace')
 
     conn_casa.close()
+    
+query = """
+SELECT 
+    datetime(StartingEpochTime, 'unixepoch') as StartingEpochTime,
+    datetime(EndingEpochTime, 'unixepoch') as EndingEpochTime,
+    ROUND((EndingEpochTime - StartingEpochTime) / (60 * 60 * 24.0), 3) AS durata_timp
+FROM House
+LIMIT 1;
+"""
+df_durata = pd.read_sql_query(query, conn)
+for id_casa in cheie_unica_casa:
+    folder_casa = f"data/case/casa_{id_casa}"
+    cale_db = f"{folder_casa}/casa_{id_casa}.db"
+    os.makedirs(folder_casa, exist_ok=True)
+    conn_casa = sqlite3.connect(cale_db)
+    df_durata.to_sql('durata_casa', conn_casa, index=False, if_exists='replace')
+    conn_casa.close()
+    
+    
+conn.close()
