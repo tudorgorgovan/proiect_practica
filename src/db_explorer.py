@@ -1,7 +1,7 @@
 import os
 import sqlite3
 import pandas as pd 
-
+import csv
 
 # connect to database
 
@@ -28,34 +28,27 @@ df = pd.read_sql_query(query, conn)
 # Pentru fiecare casa distincta, salveaza consumatoarele ei intr-o baza de date SQLite separata 
 cheie_unica_casa = df['HouseIDREF'].unique()
 
-folder_casa = f"./data/case"
+os.makedirs("./data/case", exist_ok=True)
 for id_casa in cheie_unica_casa:
     df_casa = df[df['HouseIDREF'] == id_casa]
-    folder_casa = f"data/case/casa_{id_casa}"
-    os.makedirs(folder_casa, exist_ok=True)
-
-    cale_db = f"{folder_casa}/casa_{id_casa}.db"
-    conn_casa = sqlite3.connect(cale_db)    
-    df_casa.to_sql('aplienceuri_casa', conn_casa, index=False, if_exists='replace')
+    conn_casa = sqlite3.connect(f"./data/case/case.sqlite3")    
+    df_casa.to_sql(f'casa_{id_casa}', conn_casa, index=False, if_exists='replace')
 
     conn_casa.close()
     
 query = """
-SELECT 
+SELECT
+    ID,
     datetime(StartingEpochTime, 'unixepoch') as StartingEpochTime,
     datetime(EndingEpochTime, 'unixepoch') as EndingEpochTime,
     ROUND((EndingEpochTime - StartingEpochTime) / (60 * 60 * 24.0), 3) AS durata_timp
-FROM House
-LIMIT 1;
+    
+FROM House;
 """
 df_durata = pd.read_sql_query(query, conn)
-for id_casa in cheie_unica_casa:
-    folder_casa = f"data/case/casa_{id_casa}"
-    cale_db = f"{folder_casa}/casa_{id_casa}.db"
-    os.makedirs(folder_casa, exist_ok=True)
-    conn_casa = sqlite3.connect(cale_db)
-    df_durata.to_sql('durata_casa', conn_casa, index=False, if_exists='replace')
-    conn_casa.close()
-    
-    
+
+df_durata.to_csv("./data/case/durata_case.csv", index=False)
+df_toate_casele = df_durata[df_durata['ID'].isin(cheie_unica_casa)]
+
+df_toate_casele.to_csv("./data/case/durata_case.csv", index=False)
 conn.close()
