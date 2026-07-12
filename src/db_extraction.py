@@ -1,27 +1,33 @@
-import os
 import sqlite3
 import pandas as pd
+import os
 
 
 conn = sqlite3.connect('./data/case/case.sqlite3')
-
 cursor = conn.cursor()
 
-query = """
+query_tabele = """
 SELECT name 
 FROM sqlite_master 
 WHERE type='table';
 """
-for table_name in cursor.execute(query):
-    nume_tabel = table_name[0]
-    query = f"""
-    SELECT * 
-    FROM {nume_tabel};
-    """
+cursor.execute(query_tabele)
+tabele = cursor.fetchall()
+os.makedirs(f'./data/case/aplianceuri', exist_ok=True)
+for table_name in tabele:
+    nume_tabel_sursa = table_name[0]
+    query_select = f'SELECT * FROM "{nume_tabel_sursa}";'
+    df = pd.read_sql_query(query_select, conn)
     
-    df = pd.read_sql_query(query, conn)
     nr_appliance = df['id_appliance'].unique()
     for id in nr_appliance:
         df_appliance = df[df['id_appliance'] == id]
-        connection = sqlite3.connect(f'./data/case/casa_{df_appliance["HouseIDREF"].iloc[0]}.sqlite3')
-        df_appliance.to_sql(f'{df_appliance["Name"].iloc[0]}', connection, index=False, if_exists='replace')
+        nume_appliance = df_appliance["Name"].iloc[0]
+        house_id = df_appliance["HouseIDREF"].iloc[0]
+        df_de_salvat = df_appliance[['consum', 'timp_consum']]
+
+        connection = sqlite3.connect(f'./data/case/aplianceuri/casa_{house_id}.sqlite3')
+        df_de_salvat.to_sql(nume_appliance, connection, index=False, if_exists='replace')
+        connection.close()
+
+conn.close()
