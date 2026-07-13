@@ -31,6 +31,7 @@ cheie_unica_casa = df['HouseIDREF'].unique()
 os.makedirs("./data/case", exist_ok=True)
 for id_casa in cheie_unica_casa:
     df_casa = df[df['HouseIDREF'] == id_casa]
+    del(df_casa['HouseIDREF'])
     conn_casa = sqlite3.connect(f"./data/case/case.sqlite3")    
     df_casa.to_sql(f'casa_{id_casa}', conn_casa, index=False, if_exists='replace')
 
