@@ -40,16 +40,16 @@ for id_casa in cheie_unica_casa:
 query = """
 SELECT
     ID,
-    datetime(StartingEpochTime, 'unixepoch') as StartingEpochTime,
-    datetime(EndingEpochTime, 'unixepoch') as EndingEpochTime,
+    datetime(StartingEpochTime, 'unixepoch') as inceput_timp,
+    datetime(EndingEpochTime, 'unixepoch') as final_timp,
     ROUND((EndingEpochTime - StartingEpochTime) / (60 * 60 * 24.0), 3) AS durata_timp
     
 FROM House;
 """
 df_durata = pd.read_sql_query(query, conn)
 
-df_durata.to_csv("./data/case/durata_case.csv", index=False)
 df_toate_casele = df_durata[df_durata['ID'].isin(cheie_unica_casa)]
 
-df_toate_casele.to_csv("./data/case/durata_case.csv", index=False)
+os.makedirs("./outputs", exist_ok=True)
+df_toate_casele.to_csv("./outputs/durata_case.csv", index=False)
 conn.close()
