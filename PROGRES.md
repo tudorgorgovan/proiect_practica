@@ -33,3 +33,13 @@
 - Am scos coloana `HouseIDREF` din tabelele per casa salvate in `case.sqlite3` prin [src/db_explorer.py](src/db_explorer.py), fiind redundanta (fiecare tabel e deja specific unei singure case).
 - Am creat fisierul nou [src/db_to_grafice.py](src/db_to_grafice.py): citeste toate tabelele (casele) din `case.sqlite3` si genereaza, pentru fiecare, un grafic interactiv Plotly (consum in timp, cate o linie per aparat) cu un dropdown care permite selectarea aparatului afisat; fiecare grafic e salvat ca fisier HTML in folderul `grafice/`.
 
+# Progres - 22 iulie 2026
+
+## Ce am facut
+
+- **Reparat fusul orar** in [src/db_explorer.py](src/db_explorer.py): timpul era salvat in UTC (`datetime(epoch, 'unixepoch')`), ceea ce decala ora locala cu +1h iarna / +2h vara. Acum epoch-ul e citit ca UTC si convertit la `Europe/Paris` cu pandas (`tz_localize('UTC').tz_convert('Europe/Paris').tz_localize(None)`), care gestioneaza automat trecerea la ora de vara.
+
+- Am adaugat in `db_explorer.py` coloanele derivate `hour`, `dayofweek`, `month`, ca sa fie gata pentru profilul orar si analiza pe tip de zi / anotimp.
+
+- **Am creat fisierul nou [src/curatare_date.py](src/curatare_date.py)**: clasifica fiecare aparat pe categorie si taie valorile de consum peste pragul fizic al categoriei (le marcheaza `NaN`, nu cu media; zero-urile raman). Salveaza datele curate in `case_curat.sqlite3`, fara sa atinga datele brute, si un raport in `outputs/raport_outlieri.csv`.
+

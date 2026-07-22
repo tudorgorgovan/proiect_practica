@@ -1,7 +1,6 @@
 import os
 import sqlite3
 import pandas as pd 
-import csv
 
 # connect to database
 
@@ -13,8 +12,8 @@ SELECT
     apl.ID as id_appliance,
     apl.HouseIDREF,
     apl.Name, 
-    c.value as consum,
-    datetime(c.EpochTime, 'unixepoch') as timp_consum
+    c.value as consum
+    
 FROM Appliance as apl
 INNER JOIN House as h
     ON apl.HouseIDREF = h.ID
@@ -23,6 +22,10 @@ INNER JOIN Consumption as c
 """
 
 df = pd.read_sql_query(query, conn)
+df['timp_consum'] = pd.to_datetime(df['epoch'], unit='s', utc=True).dt.tz_convert('Europe/Paris').dt.tz_localize(None)
+df['hour'] = df['timp_consum'].dt.hour
+df['dayofweek'] = df['timp_consum'].dt.dayofweek
+df['month'] = df['timp_consum'].dt.month
 
 
 # Pentru fiecare casa distincta, salveaza consumatoarele ei intr-o baza de date SQLite separata 
@@ -40,13 +43,16 @@ for id_casa in cheie_unica_casa:
 query = """
 SELECT
     ID,
-    datetime(StartingEpochTime, 'unixepoch') as inceput_timp,
-    datetime(EndingEpochTime, 'unixepoch') as final_timp,
+    StartingEpochTime,
+    EndingEpochTime,
     ROUND((EndingEpochTime - StartingEpochTime) / (60 * 60 * 24.0), 3) AS durata_timp
     
 FROM House;
 """
 df_durata = pd.read_sql_query(query, conn)
+df_durata['inceput_timp'] = pd.to_datetime(df_durata['StartingEpochTime'], unit='s', utc=True).dt.tz_convert('Europe/Paris').dt.tz_localize(None)
+df_durata['final_timp'] = pd.to_datetime(df_durata['EndingEpochTime'], unit='s', utc=True).dt.tz_convert('Europe/Paris').dt.tz_localize(None)
+df_durata = df_durata.drop(columns=['StartingEpochTime', 'EndingEpochTime'])
 
 df_toate_casele = df_durata[df_durata['ID'].isin(cheie_unica_casa)]
 

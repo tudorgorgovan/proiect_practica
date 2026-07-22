@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 
-conn = sqlite3.connect('./data/case/case.sqlite3')
+conn = sqlite3.connect('./data/case/case_curat.sqlite3')
 cursor = conn.cursor()
 
 query_tabele = """
@@ -37,7 +37,7 @@ print(tabel.to_string(index=False))
 os.makedirs('./outputs', exist_ok=True)
 tabel.to_csv('./outputs/analiza_calitate.csv', index=False)
 
-for nume_tabel_sursa in tabel['casa'].head(5):
+for nume_tabel_sursa in tabel['casa']:
     query_appliance = f'SELECT Name, consum FROM "{nume_tabel_sursa}";'
     df_casa = pd.read_sql_query(query_appliance, conn)
     
