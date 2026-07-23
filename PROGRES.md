@@ -55,4 +55,4 @@
 
 - **Am creat/reparat [src/profil_orar.py](src/profil_orar.py)**: agregă datele curate de la rezolutie 10 min la 1 ora (suma celor 6 citiri), pe fiecare aparat, si salveaza `case_profil_orar.sqlite3` cu un tabel per casa. Facut robust la structura intrarii (detecteaza coloana `casa`; daca lipseste, numele tabelului e casa; sare peste tabele care nu incep cu `casa_`).
 
-
+## TERMINAT PASUL 1 - Curatarea si agregarea datelor.
