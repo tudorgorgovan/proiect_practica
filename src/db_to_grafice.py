@@ -10,11 +10,10 @@ def modificare_nume(nume):
     return nume
 
 
-conn = sqlite3.connect('./data/case/case_curat.sqlite3')
+conn = sqlite3.connect('./data/case/case_profil_orar.sqlite3')
 cursor = conn.cursor()
 query = """
-SELECT
-    name
+SELECT name
 FROM sqlite_master
 WHERE type='table';
 """

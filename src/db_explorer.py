@@ -12,8 +12,8 @@ SELECT
     apl.ID as id_appliance,
     apl.HouseIDREF,
     apl.Name, 
-    c.value as consum
-    
+    c.value as consum,
+    c.EpochTime as epoch
 FROM Appliance as apl
 INNER JOIN House as h
     ON apl.HouseIDREF = h.ID
@@ -26,7 +26,7 @@ df['timp_consum'] = pd.to_datetime(df['epoch'], unit='s', utc=True).dt.tz_conver
 df['hour'] = df['timp_consum'].dt.hour
 df['dayofweek'] = df['timp_consum'].dt.dayofweek
 df['month'] = df['timp_consum'].dt.month
-
+df.drop(columns=['epoch'], inplace=True)
 
 # Pentru fiecare casa distincta, salveaza consumatoarele ei intr-o baza de date SQLite separata 
 cheie_unica_casa = df['HouseIDREF'].unique()

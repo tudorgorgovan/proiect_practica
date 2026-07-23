@@ -43,3 +43,16 @@
 
 - **Am creat fisierul nou [src/curatare_date.py](src/curatare_date.py)**: clasifica fiecare aparat pe categorie si taie valorile de consum peste pragul fizic al categoriei (le marcheaza `NaN`, nu cu media; zero-urile raman). Salveaza datele curate in `case_curat.sqlite3`, fara sa atinga datele brute, si un raport in `outputs/raport_outlieri.csv`.
 
+# Progres - 23 iulie 2026
+
+## Ce am facut
+
+- **Completarea valorilor lipsa in fisierul [src/curatare_date.py](src/curatare_date.py)**: outlierii nu mai raman `NaN` — dupa ce sunt taiati (peste prag) sunt inlocuiti cu media aparatului din aceeasi casa (media pe valorile ramase, grupat pe `casa` + `id_appliance`). Astfel `case_curate.sqlite3` contine direct valori modificate, fara `NaN`. 
+
+- **Raport de outlieri extins** (`outputs/raport_outlieri.csv`): pe langa `casa`, `aparat`, `categorie`, `puncte_taiate`, am adaugat `valoare_medie` (media pusa in loc) si `date_taiate` (lista datelor/`timp_consum` la care s-a facut inlocuirea). Total taiat: 37 puncte.
+
+- **Ajustat pragurile per categorie** in `curatare_date.py` (ex. `plita` 800, `spalat`/`vase` 1500, `uscator`/`cuptor`/`microunde` 1000, `boiler_el` 2500) ca sa elimine varfurile nefizice.
+
+- **Am creat/reparat [src/profil_orar.py](src/profil_orar.py)**: agregă datele curate de la rezolutie 10 min la 1 ora (suma celor 6 citiri), pe fiecare aparat, si salveaza `case_profil_orar.sqlite3` cu un tabel per casa. Facut robust la structura intrarii (detecteaza coloana `casa`; daca lipseste, numele tabelului e casa; sare peste tabele care nu incep cu `casa_`).
+
+
