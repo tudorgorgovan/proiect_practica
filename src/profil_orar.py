@@ -20,14 +20,17 @@ for nume_tabel in tabele:
     if not df['casa'].astype(str).str.startswith('casa_').all():
         continue
 
+    if 'categorie' not in df.columns:
+        df['categorie'] = None
+
     df['timp_consum'] = pd.to_datetime(df['timp_consum']).dt.floor('h')
 
-    df_orar = df.groupby(['casa', 'id_appliance', 'Name', 'timp_consum'], as_index=False)['consum'].sum()
+    df_orar = df.groupby(['casa', 'id_appliance', 'Name', 'categorie', 'timp_consum'], as_index=False)['consum'].sum()
     toate.append(df_orar)
 
 profil = pd.concat(toate, ignore_index=True)
 
-profil = profil.groupby(['casa', 'id_appliance', 'Name', 'timp_consum'], as_index=False)['consum'].sum()
+profil = profil.groupby(['casa', 'id_appliance', 'Name', 'categorie', 'timp_consum'], as_index=False)['consum'].sum()
 
 profil['hour'] = profil['timp_consum'].dt.hour
 profil['dayofweek'] = profil['timp_consum'].dt.dayofweek
