@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import numpy as np
+import plotly.express as px
 
 conn = sqlite3.connect('./data/case/case_profil_orar.sqlite3')
 cursor = conn.cursor()
@@ -37,6 +38,8 @@ df_apl_ctrb = pd.read_sql_query(query, conn)
 #print(df_apl_ctrb)
 
 print((df_apl_ctrb['ctrb_kWh_per_zi']/df_total['total_consum_kWh_per_zi']).round(3).sort_values(ascending=False)*100)    
-    
-    
-    
+   
+df_total['pondere'] = df_apl_ctrb['ctrb_kWh_per_zi'] / df_total['total_consum_kWh_per_zi'] * 100
+df_total = df_total.sort_values('pondere', ascending=False)
+
+px.bar(df_total, x='casa', y='pondere', text=df_total['pondere'].round(2), title='Ponderea consumului controlabil din consumul total', labels={'casa': 'Casa', 'pondere': 'Pondere (%)'}, color='pondere').show()
