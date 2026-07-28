@@ -56,3 +56,13 @@
 - **Am creat/reparat [src/profil_orar.py](src/profil_orar.py)**: agregă datele curate de la rezolutie 10 min la 1 ora (suma celor 6 citiri), pe fiecare aparat, si salveaza `case_profil_orar.sqlite3` cu un tabel per casa. Facut robust la structura intrarii (detecteaza coloana `casa`; daca lipseste, numele tabelului e casa; sare peste tabele care nu incep cu `casa_`).
 
 ## TERMINAT PASUL 1 - Curatarea si agregarea datelor.
+
+# Progres - 26 iulie 2026
+
+- Bazat pe fisierul `1_pondere_consum.py` putem afla cat de mult din consum este realizat de aplianceuri controlabile. Astfel, `casa907` are 99.3%, `casa904` are 83,86% si `casa902` are 76%.
+- Bazat pe fisierul `2_flexibilitate.py` putem afla cate aplianceuri controlabile fiecare casa si care, clasandu-le in ordine descrescatoare dupa numarul acestora. O intrebare importanta la care raspunde acest script este: "Care casa are boiler?". Astfel, casele care au boiler sunt: casa907 cu 4 aplianceuri controlabile; casa904 cu 3 aplianceuri controlabile; casa909 cu 3 aplianceuri controlabile; casa902 cu 3 aplianceuri; casa900 cu 2 aplianceuri controlabile.
+
+**Ranking pana acum**: 
+  1) casa907
+  2) casa904
+  3) casa902
