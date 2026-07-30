@@ -4,7 +4,7 @@ import numpy as np
 import plotly.express as px
 
 conn = sqlite3.connect('./data/case/case_profil_orar.sqlite3')
-cursor = conn.cursor()
+
 query = """
 SELECT casa,
     categorie,
