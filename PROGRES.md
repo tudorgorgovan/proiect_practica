@@ -95,3 +95,15 @@
 
 ## TERMINAT PASUL 2 - KPI-uri de selectie si probabilitati de utilizare.
 
+# Progres - 4 august 2026
+
+- Am ales casa901 pentru model: are toate cele trei categorii pornite de om si nu are boiler sau incalzire electrica.
+
+- Aparatele stau pe exact zero cand sunt oprite (95.3% din masuratorile masinii de spalat). Valorile 10-100 pe care le luasem drept standby sunt clatirea si centrifuga, iar banda aia e mai lunga decat cea de peste 100.
+
+- Am trecut la doua praguri: `PRAG_JOS = 5` pentru capetele ciclului, `PRAGURI_PORNIT` pe categorie pentru confirmare. Cu prag unic, un ciclu de 110 minute din casa901 iesea de 50 de minute si pierdea 14% din energie.
+
+- Am creat [src/PAS_3_Model/6_cicluri.py](src/PAS_3_Model/6_cicluri.py): citeste `case_curate.sqlite3`, grupeaza masuratorile consecutive de peste `PRAG_JOS` si scoate un rand per ciclu (`start`, `sfarsit`, `energie_wh`, `varf`, `durata_min`) plus `ora_start`, `tip_zi`, `anotimp`, `perioada_zi`, `saptamana`. Salveaza in `cicluri.sqlite3`. Gruparea e per aparat si se rupe la pauzele din inregistrare.
+
+- Unitatea de observatie devine evenimentul: cele 54404 de masuratori ale masinii de spalat din casa901 dau 254 de cicluri.
+
